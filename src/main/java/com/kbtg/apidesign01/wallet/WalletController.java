@@ -36,14 +36,14 @@ public class WalletController {
     }
 
     @PutMapping("/{id}")
-    public Wallet editWallet(@PathVariable int id,
+    public Wallet editWallet(@PathVariable Integer id,
                              @Validated
                              @RequestBody WalletUpdateRequestDto request) {
         return walletService.editWallet(id,request);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteWallet(@PathVariable int id){
+    public String deleteWallet(@PathVariable Integer id){
         return walletService.deleteWallet(id);
     }
 }

@@ -37,6 +37,7 @@ public class WalletService {
     public Wallet getWalletById(Integer id){
 //        return wallets.stream().filter(wallet -> wallet.getId() == id)
 //                .findFirst().orElseThrow(() -> new NotFoundException("Wallet not found by id: "+id) );
+
         return null;
     }
 
@@ -52,21 +53,42 @@ public class WalletService {
 //        wallets.add(wallet);
 //        mailService.sendEmail("admin@wallet.com","new wallet created.");
 //        return wallet;
-        return null;
+        Wallet wallet = new Wallet();
+        wallet.setWalletName(requestDto.name());
+        wallet.setActive(true);
+        walletRepository.save(wallet);
+        return wallet;
     }
 
-    public Wallet editWallet( int id, WalletUpdateRequestDto request) {
+    public Wallet editWallet( Integer id, WalletUpdateRequestDto request) {
 //        Wallet wallet = this.getWalletById(id);
 //        wallet.setName(request.name());
 //        return wallet;
-        return null;
+        Optional<Wallet> optionalWallet = walletRepository.findById(Long.valueOf(id));
+        if (optionalWallet.isEmpty()){
+            throw new NotFoundException("Id: "+id+" doesn't exist in database.");
+        }
+
+        Wallet wallet = optionalWallet.get();
+        wallet.setWalletName(request.name());
+        walletRepository.save(wallet);
+        return wallet;
     }
 
-    public String deleteWallet(int id){
+    public String deleteWallet(Integer id){
 //        this.getWalletById(id);
 //        wallets.removeIf(w -> w.getId()==id);
 //        System.out.println("wallet id: "+id+" is removed.");
 //        return "wallet id: "+id+" is removed.";
-        return null;
+        walletRepository.deleteById(Long.valueOf(id));
+        return "okie";
+        }
+
+    public void activeAllWalletsActive(){
+        walletRepository.setAllWalletsActive();
+        }
+
+    public void deleteWalletsByIdBelow3(){
+        walletRepository.deleteWalletsByIdBelow3();
     }
 }
