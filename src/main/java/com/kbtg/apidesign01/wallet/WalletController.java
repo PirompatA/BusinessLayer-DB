@@ -30,7 +30,6 @@ public class WalletController {
 
     @PostMapping("")
     public Wallet createWallet(
-            @Validated
             @RequestBody WalletRequestDto requestDto){
         return walletService.createWallet(requestDto);
     }

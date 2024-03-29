@@ -3,6 +3,8 @@ package com.kbtg.apidesign01.wallet;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kbtg.apidesign01.profile.Profile;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="wallet")
@@ -11,11 +13,13 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotNull
+    @Size(min=3, max=20)
     private String walletName;
     private Boolean active;
 
     @ManyToOne
-    @JoinColumn(name = "profile_email")
+    @JoinColumn(name = "profile_email",referencedColumnName = "email")
     private Profile profile;
 
     public Wallet() {

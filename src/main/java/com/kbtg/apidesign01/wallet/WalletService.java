@@ -3,6 +3,9 @@ package com.kbtg.apidesign01.wallet;
 import com.kbtg.apidesign01.exception.DuplicateWalletException;
 import com.kbtg.apidesign01.exception.NotFoundException;
 import com.kbtg.apidesign01.mail.MailService;
+import com.kbtg.apidesign01.profile.Profile;
+import com.kbtg.apidesign01.profile.ProfileRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,9 @@ public class WalletService {
     @Autowired
     private WalletRepository walletRepository;
 
+    @Autowired
+    private ProfileRepository profileRepository;
+
 //     List<Wallet> wallets = new ArrayList<>(
 //             List.of(new Wallet(1,"AAA","AAA@email.com"),
 //                     new Wallet(2,"BBB","BBB@email.com"),
@@ -41,6 +47,7 @@ public class WalletService {
         return null;
     }
 
+    @Transactional
     public Wallet createWallet(WalletRequestDto requestDto) {
 //        wallets.stream().filter(wallet -> wallet.getEmail().equals(requestDto.email()))
 //                .findFirst()
@@ -53,9 +60,21 @@ public class WalletService {
 //        wallets.add(wallet);
 //        mailService.sendEmail("admin@wallet.com","new wallet created.");
 //        return wallet;
+
+        Optional<Profile> optionalProfile = profileRepository.findByEmail(requestDto.email());
+        Profile profile;
+        if (optionalProfile.isPresent()){
+            profile = optionalProfile.get();
+        } else {
+            profile = new Profile();
+            profile.setEmail(requestDto.email());
+            profile.setName(requestDto.name());
+            profileRepository.save(profile);
+        }
         Wallet wallet = new Wallet();
         wallet.setWalletName(requestDto.name());
         wallet.setActive(true);
+        wallet.setProfile(profile);
         walletRepository.save(wallet);
         return wallet;
     }
